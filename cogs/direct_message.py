@@ -21,7 +21,6 @@ class DirectMessageEvents(commands.Cog, name="Direct Message"):
 
     async def send_mail(self, message, guild, to_send):
         self.bot.stats_messages += 1
-        self.bot.prom.tickets_message_counter.inc()
         guild = await self.bot.cogs["Communication"].handler("get_guild", 1, {"guild_id": guild})
         if not guild:
             await message.channel.send(
@@ -72,7 +71,6 @@ class DirectMessageEvents(commands.Cog, name="Direct Message"):
             channel = channels[0]
         if not channel:
             self.bot.stats_tickets += 1
-            self.bot.prom.tickets_counter.inc()
             try:
                 name = "".join(
                     l for l in message.author.name.lower() if l not in string.punctuation and l.isprintable()
@@ -114,11 +112,12 @@ class DirectMessageEvents(commands.Cog, name="Direct Message"):
                     )
                 )
                 return
-            except discord.HTTPException as e:
+            except discord.HTTPException:
                 await message.channel.send(
                     embed=discord.Embed(
-                        description="A HTTPException error occurred. Please contact an admin on the server with the "
-                        f"following error information: {e.text} ({e.code}).",
+                        description="A HTTPException error occurred. This is most likely because the server has "
+                        "reached the maximum number of channels (500). Please join the support server if you cannot "
+                        "figure out what went wrong.",
                         colour=self.bot.error_colour,
                     )
                 )
@@ -146,7 +145,7 @@ class DirectMessageEvents(commands.Cog, name="Direct Message"):
                         roles.append("@here")
                     else:
                         roles.append(f"<@&{role}>")
-                await self.bot.http.send_message(channel["id"], " ".join(roles), embed=embed.to_dict())
+                res = await self.bot.http.send_message(channel["id"], " ".join(roles), embed=embed.to_dict())
                 if data[5]:
                     embed = discord.Embed(
                         title="Custom Greeting Message",
@@ -183,10 +182,7 @@ class DirectMessageEvents(commands.Cog, name="Direct Message"):
             else:
                 await self.bot.http.send_message(channel["id"], None, embed=embed.to_dict())
         except discord.Forbidden:
-            try:
-                await message2.delete()
-            except NameError:
-                pass
+            await message2.delete()
             await message.channel.send(
                 embed=discord.Embed(
                     description="No permission to send message in the channel. Please contact an admin on the server.",
@@ -304,9 +300,6 @@ class DirectMessageEvents(commands.Cog, name="Direct Message"):
             await message.channel.send(
                 embed=discord.Embed(description="You are banned from this bot.", colour=self.bot.error_colour)
             )
-            return
-        if self.bot.config.default_server:
-            await self.send_mail(message, self.bot.config.default_server, message.content)
             return
         guild = None
         async for msg in message.channel.history(limit=30):

@@ -21,7 +21,6 @@ class Events(commands.Cog):
         if self.bot.config.testing is False:
             self.stats_updates = bot.loop.create_task(self.stats_updater())
         self.bot_stats_updates = bot.loop.create_task(self.bot_stats_updater())
-        self.bot_categories_updates = bot.loop.create_task(self.bot_categories_updater())
 
     async def stats_updater(self):
         while True:
@@ -32,30 +31,45 @@ class Events(commands.Cog):
             guilds = sum(guilds)
             await self.bot.session.post(
                 f"https://top.gg/api/bots/{self.bot.user.id}/stats",
-                data=json.dumps({"server_count": guilds, "shard_count": self.bot.shard_count}),
+                data=json.dumps(self.get_dbl_payload(guilds)),
                 headers=self.dbl_auth,
             )
             await self.bot.session.post(
                 f"https://discord.bots.gg/api/v1/bots/{self.bot.user.id}/stats",
-                data=json.dumps({"guildCount": guilds, "shardCount": self.bot.shard_count}),
+                data=json.dumps(self.get_dbots_payload(guilds)),
                 headers=self.dbots_auth,
             )
             await self.bot.session.post(
                 f"https://bots.ondiscord.xyz/bot-api/bots/{self.bot.user.id}/guilds",
-                data=json.dumps({"guildCount": guilds}),
+                data=json.dumps(self.get_bod_payload(guilds)),
                 headers=self.bod_auth,
             )
             await self.bot.session.post(
                 f"https://botsfordiscord.com/api/bot/{self.bot.user.id}",
-                data=json.dumps({"server_count": guilds}),
+                data=json.dumps(self.get_bfd_payload(guilds)),
                 headers=self.bfd_auth,
             )
             await self.bot.session.post(
-                f"https://discord.boats/api/v2/bot/{self.bot.user.id}",
-                data=json.dumps({"server_count": guilds}),
+                f"https://discord.boats/api/bot/{self.bot.user.id}",
+                data=json.dumps(self.get_dboats_payload(guilds)),
                 headers=self.dboats_auth,
             )
             await asyncio.sleep(900)
+
+    def get_dbl_payload(self, guilds):
+        return {"server_count": guilds, "shard_count": self.bot.shard_count}
+
+    def get_dbots_payload(self, guilds):
+        return {"guildCount": guilds, "shardCount": self.bot.shard_count}
+
+    def get_bod_payload(self, guilds):
+        return {"guildCount": guilds}
+
+    def get_bfd_payload(self, guilds):
+        return {"server_count": guilds}
+
+    def get_dboats_payload(self, guilds):
+        return {"server_count": guilds}
 
     async def bot_stats_updater(self):
         while True:
@@ -78,16 +92,6 @@ class Events(commands.Cog):
                 elif row[1] == 1:
                     self.banned_guilds.append(row[0])
             await asyncio.sleep(60)
-
-    async def bot_categories_updater(self):
-        while True:
-            async with self.bot.pool.acquire() as conn:
-                data = await conn.fetch("SELECT category FROM data")
-            categories = []
-            for row in data:
-                categories.append(row[0])
-            self.bot.all_category = categories
-            await asyncio.sleep(5)
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -113,7 +117,6 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_connect(self):
-        self.bot.prom.events_counter.labels(type="CONNECT").inc()
         try:
             embed = discord.Embed(
                 title=f"[Cluster {self.bot.cluster}] Shard Connected",
@@ -126,7 +129,6 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_disconnect(self):
-        self.bot.prom.events_counter.labels(type="DISCONNECT").inc()
         try:
             embed = discord.Embed(
                 title=f"[Cluster {self.bot.cluster}] Shard Disconnected",
@@ -139,7 +141,6 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_resumed(self):
-        self.bot.prom.events_counter.labels(type="RESUME").inc()
         try:
             embed = discord.Embed(
                 title=f"[Cluster {self.bot.cluster}] Shard Resumed",
@@ -152,7 +153,6 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        self.bot.prom.guilds_join_counter.inc()
         embed = discord.Embed(
             title="Server Join",
             description=f"{guild.name} ({guild.id})",
@@ -167,7 +167,6 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
-        self.bot.prom.guilds_leave_counter.inc()
         async with self.bot.pool.acquire() as conn:
             await conn.execute("DELETE FROM data WHERE guild=$1", guild.id)
         embed = discord.Embed(
@@ -188,7 +187,6 @@ class Events(commands.Cog):
         if not ctx.command:
             return
         self.bot.stats_commands += 1
-        self.bot.prom.commands_counter.labels(name=ctx.command.name).inc()
         if message.guild:
             if message.guild.id in self.bot.banned_guilds:
                 await message.guild.leave()
@@ -220,11 +218,6 @@ class Events(commands.Cog):
         if ctx.prefix == f"<@{self.bot.user.id}> " or ctx.prefix == f"<@!{self.bot.user.id}> ":
             ctx.prefix = self.bot.tools.get_guild_prefix(self.bot, message.guild)
         await self.bot.invoke(ctx)
-
-    @commands.Cog.listener()
-    async def on_socket_response(self, message):
-        if message.get("op") == 0:
-            self.bot.prom.dispatch_counter.labels(type=message.get("t")).inc()
 
 
 def setup(bot):

@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import typing
 
 import discord
 
@@ -218,9 +219,7 @@ class Configuration(commands.Cog):
         aliases=["modrole", "supportrole"],
         usage="accessrole [roles]",
     )
-    async def accessrole(self, ctx, roles: commands.Greedy[discord.Role] = None, *, check=None):
-        if roles is None:
-            roles = []
+    async def accessrole(self, ctx, roles: commands.Greedy[discord.Role] = [], *, check=None):
         if check:
             await ctx.send(
                 embed=discord.Embed(
@@ -268,9 +267,7 @@ class Configuration(commands.Cog):
         aliases=["mentionrole"],
         usage="pingrole [roles]",
     )
-    async def pingrole(self, ctx, roles: commands.Greedy[PingRoleConverter] = None):
-        if roles is None:
-            roles = []
+    async def pingrole(self, ctx, roles: commands.Greedy[PingRoleConverter] = []):
         role_ids = []
         for role in roles:
             if not isinstance(role, discord.Role):

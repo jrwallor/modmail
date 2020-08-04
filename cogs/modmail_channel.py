@@ -27,18 +27,20 @@ class ModMailEvents(commands.Cog):
         ):
             return
         prefix = self.bot.tools.get_guild_prefix(self.bot, message.guild)
-        if message.content.startswith(prefix):
+        if message.content.startswith(prefix) and not message.content.startswith(prefix+"reply "):
             return
         if message.author.id in self.bot.banned_users:
             await message.channel.send(
                 embed=discord.Embed(description="You are banned from this bot.", colour=self.bot.error_colour)
             )
             return
-        data = await self.bot.get_data(message.guild.id)
-        if data[10] is True:
-            await self.send_mail_mod(message, prefix, True)
-        else:
-            await self.send_mail_mod(message, prefix)
+        #data = await self.bot.get_data(message.guild.id)
+        #if data[10] is True:
+        #    await self.send_mail_mod(message, prefix, True)
+        #else:
+        #    await self.send_mail_mod(message, prefix)
+        return
+
 
     async def send_mail_mod(self, message, prefix, anon: bool = False, msg: str = None, snippet: bool = False):
         self.bot.stats_messages += 1
@@ -52,19 +54,15 @@ class ModMailEvents(commands.Cog):
                 )
             )
             return
-        user = self.bot.tools.get_modmail_user(message.channel)
-        member = message.guild.get_member(user)
+        member = message.guild.get_member(self.bot.tools.get_modmail_user(message.channel))
         if member is None:
-            try:
-                member = await message.guild.fetch_member(user)
-            except discord.NotFound:
-                await message.channel.send(
-                    embed=discord.Embed(
-                        description=f"The user was not found. Use `{prefix}close [reason]` to close this channel.",
-                        colour=self.bot.error_colour,
-                    )
+            await message.channel.send(
+                embed=discord.Embed(
+                    description=f"The user was not found. Use `{prefix}close [reason]` to close this channel.",
+                    colour=self.bot.error_colour,
                 )
-                return
+            )
+            return
         if snippet is True:
             msg = tools.tag_format(msg, member)
         try:

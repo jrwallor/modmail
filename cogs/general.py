@@ -168,21 +168,7 @@ class General(commands.Cog):
             colour=self.bot.primary_colour,
         )
         page.add_field(name="Link", value="https://discordtemplates.me")
-        page.set_thumbnail(
-            url="https://cdn.discordapp.com/icons/696179394057732237/cf54e042456638eba2ea5abddfc7910e.png"
-        )
-        all_pages.append(page)
-        page = discord.Embed(
-            title="Homework Help",
-            description="Got assignments? Need help? Then come join Discord's premier hub for students, scholars, "
-            "professionals, and hobbyists interested in discussions, challenges, as well as news, views, and reviews "
-            "that runs the gamut of academic disciplines.",
-            colour=self.bot.primary_colour,
-        )
-        page.add_field(name="Link", value="https://discord.gg/homework")
-        page.set_thumbnail(
-            url="https://cdn.discordapp.com/icons/238956364729155585/468ac0a7dc84db45d018e0c442fe8447.png"
-        )
+        page.set_thumbnail(url="https://discordtemplates.me/static/img/icon.png")
         all_pages.append(page)
         page = discord.Embed(
             title="Otzdarva's Dungeon",
@@ -252,6 +238,17 @@ class General(commands.Cog):
             url="https://cdn.discordapp.com/avatars/432533456807919639/6b2a1311b54a1d3b3cec1fb67ef94ed7.png"
         )
         all_pages.append(page)
+        page = discord.Embed(
+            title="Custom Bot Development",
+            description="This is also my server, and this is where you can request for bots for your server. Nothing "
+            "on this world is free btw.",
+            colour=self.bot.primary_colour,
+        )
+        page.add_field(name="Link", value="https://discord.gg/JNQhDDM")
+        page.set_thumbnail(
+            url="https://cdn.discordapp.com/icons/572935145347350548/2408500f84def61a514c6c2108b53c96.png"
+        )
+        all_pages.append(page)
         for embed in all_pages:
             embed.set_author(name=f"{self.bot.user.name} partners", icon_url=self.bot.user.avatar_url)
             embed.set_footer(text="Use the reactions to flip pages.")
@@ -262,39 +259,31 @@ class General(commands.Cog):
     async def invite(self, ctx):
         await ctx.send(
             embed=discord.Embed(
-                title="Invite Link",
+                title="Invite Me!",
                 description=f"https://discordapp.com/api/oauth2/authorize?client_id={self.bot.user.id}"
                 "&permissions=268823640&scope=bot",
                 colour=self.bot.primary_colour,
             )
         )
 
-    @commands.command(description="Get a link to my support server.", usage="support", aliases=["server"])
+    @commands.command(
+        description="Get a link to my support server.", usage="support", aliases=["server"],
+    )
     async def support(self, ctx):
         await ctx.send(
             embed=discord.Embed(
                 title="Support Server",
-                description="https://discord.gg/wjWJwJB",
+                description="You can join the support server with this link: https://discord.gg/wjWJwJB",
                 colour=self.bot.primary_colour,
             )
         )
 
-    @commands.command(description="Get the link to ModMail's website.", usage="website")
-    async def website(self, ctx):
+    @commands.command(description="Get the link to vote for ModMail.", usage="vote")
+    async def vote(self, ctx):
         await ctx.send(
             embed=discord.Embed(
-                title="Website",
-                description=f"https://modmail.netlify.com",
-                colour=self.bot.primary_colour,
-            )
-        )
-
-    @commands.command(description="Get the link to ModMail's GitHub repository.", usage="source", aliases=["github"])
-    async def source(self, ctx):
-        await ctx.send(
-            embed=discord.Embed(
-                title="Github Repository",
-                description=f"https://github.com/CHamburr/modmail",
+                title="Vote",
+                description=f"Please vote for me here: https://discordbots.org/bot/575252669443211264. Thank you!",
                 colour=self.bot.primary_colour,
             )
         )
