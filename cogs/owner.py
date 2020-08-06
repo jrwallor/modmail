@@ -1,6 +1,5 @@
 import copy
 import io
-import json
 import logging
 import subprocess
 import textwrap
@@ -87,63 +86,8 @@ class Owner(commands.Cog):
             await ctx.send(embed=discord.Embed(description=f"Error: {data[0]}", colour=self.bot.error_colour))
         else:
             await ctx.send(
-                embed=discord.Embed(description="Successfully reloaded the tools.", colour=self.bot.primary_colour,)
+                embed=discord.Embed(description="Successfully reloaded the tools.", colour=self.bot.primary_colour)
             )
-
-    @commands.is_owner()
-    @commands.command(description="Restart a cluster.", usage="restart <cluster>", hidden=True)
-    async def restart(self, ctx, *, cluster: int):
-        await ctx.send(embed=discord.Embed(description="Restarting...", colour=self.bot.primary_colour))
-        await self.bot.cogs["Communication"].handler("restart", 0, scope="launcher", cluster=cluster)
-
-    @commands.is_owner()
-    @commands.command(description="Start a cluster.", usage="start <cluster>", hidden=True)
-    async def start(self, ctx, *, cluster: int):
-        await ctx.send(embed=discord.Embed(description="Starting...", colour=self.bot.primary_colour))
-        await self.bot.cogs["Communication"].handler("start", 0, scope="launcher", cluster=cluster)
-
-    @commands.is_owner()
-    @commands.command(description="Stop a cluster.", usage="stop <cluster>", hidden=True)
-    async def stop(self, ctx, *, cluster: int):
-        await ctx.send(embed=discord.Embed(description="Stopping...", colour=self.bot.primary_colour))
-        await self.bot.cogs["Communication"].handler("stop", 0, scope="launcher", cluster=cluster)
-
-    @commands.is_owner()
-    @commands.command(description="Perform a rolling restart.", usage="rollrestart", hidden=True)
-    async def rollrestart(self, ctx):
-        await ctx.send(embed=discord.Embed(description="Rolling a restart...", colour=self.bot.primary_colour))
-        await self.bot.cogs["Communication"].handler("roll_restart", 0, scope="launcher")
-
-    @commands.is_owner()
-    @commands.command(description="Get clusters' statuses.", usage="status", hidden=True)
-    async def status(self, ctx):
-        data = await self.bot.cogs["Communication"].handler("statuses", 1, scope="launcher")
-        if not data:
-            await ctx.send(
-                embed=discord.Embed(
-                    description="Something went wrong while fetching data.", colour=self.bot.error_colour,
-                )
-            )
-            return
-        await ctx.send(
-            embed=discord.Embed(
-                description=f"```json\n{json.dumps(data[0], indent=4)}```", colour=self.bot.primary_colour,
-            )
-        )
-
-    @checks.is_owner()
-    @commands.command(name="latency", description="Get shards' latency.", usage="latency", hidden=True)
-    async def latency(self, ctx):
-        data = await self.bot.cogs["Communication"].handler("get_shards", self.bot.cluster_count)
-        shards = {}
-        for element in data:
-            for key, value in element.items():
-                shards[key] = value
-        await ctx.send(
-            embed=discord.Embed(
-                description=f"```json\n{json.dumps(shards, indent=4)}```", colour=self.bot.primary_colour,
-            )
-        )
 
     @checks.is_owner()
     @commands.command(name="eval", description="Evaluate code.", usage="eval <code>", hidden=True)
@@ -273,11 +217,6 @@ class Owner(commands.Cog):
                 description="Successfully removed that user's premium.", colour=self.bot.primary_colour,
             )
         )
-
-    @checks.is_owner()
-    @commands.command(description="Make me say something.", usage="echo <message>", rest_is_raw=True, hidden=True)
-    async def echo(self, ctx, *, content: str):
-        await ctx.send(content)
 
     @checks.is_owner()
     @commands.command(description="Ban a user from the bot", usage="banuser <user>", hidden=True)

@@ -150,8 +150,18 @@ class Communication(commands.Cog):
         }
         await self.bot.redis.execute("PUBLISH", self.ipc_channel, json.dumps(payload))
 
-    async def get_shards(self, command_id):
-        payload = {"output": {self.bot.cluster: [self.bot.shard_ids, self.bot.latency]}, "command_id": command_id}
+    async def get_status(self, command_id):
+        payload = {
+            "output": {
+                self.bot.cluster: {
+                    "ready": self.bot.is_ready(),
+                    "shards": ", ".join([str(x) for x in self.bot.shard_ids]),
+                    "latency": round(self.bot.latency * 1000, 2),
+                    "uptime": self.bot.uptime.total_seconds(),
+                },
+            },
+            "command_id": command_id,
+        }
         await self.bot.redis.execute("PUBLISH", self.ipc_channel, json.dumps(payload))
 
     async def get_guild(self, guild_id, command_id):
