@@ -94,8 +94,9 @@ def is_patron():
 def is_modmail_channel2(bot, channel, user_id=None, json_dict=False):
     if json_dict is True:
         return (
-            channel["category_id"]
-            and int(channel["category_id"]) in bot.all_category
+            "category_id" in channel
+            and channel["category_id"] in bot.all_category
+            and "topic" in channel
             and channel["topic"]
             and channel["topic"].startswith("ModMail Channel ")
             and channel["topic"].replace("ModMail Channel ", "").split(" ")[0].isdigit()

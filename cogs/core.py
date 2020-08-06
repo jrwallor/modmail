@@ -1,3 +1,4 @@
+import asyncio
 import copy
 import datetime
 import io
@@ -33,9 +34,7 @@ class Core(commands.Cog):
     @checks.in_database()
     #@checks.is_mod()
     @commands.guild_only()
-    @commands.command(
-        description="Reply to the ticket anonymously.", usage="areply <message>",
-    )
+    @commands.command(description="Reply to the ticket anonymously.", usage="areply <message>")
     async def areply(self, ctx, *, message):
         modmail = ModMailEvents(self.bot)
         await modmail.send_mail_mod(ctx.message, ctx.prefix, True, message)
@@ -44,7 +43,7 @@ class Core(commands.Cog):
         try:
             await ctx.send(embed=discord.Embed(description="Closing channel...", colour=self.bot.primary_colour))
             data = await self.bot.get_data(ctx.guild.id)
-            if data[7] == True:
+            if data[7] is True:
                 messages = await ctx.channel.history(limit=10000).flatten()
             await ctx.channel.delete()
             embed = discord.Embed(
@@ -64,7 +63,7 @@ class Core(commands.Cog):
                     data = await self.bot.get_data(ctx.guild.id)
                     if data[6]:
                         embed2 = discord.Embed(
-                            title="Custom Close Message",
+                            title="Custom Closing Message",
                             description=self.bot.tools.tag_format(data[6], member),
                             colour=self.bot.mod_colour,
                             timestamp=datetime.datetime.utcnow(),
@@ -127,7 +126,6 @@ class Core(commands.Cog):
                             #log_url = f"https://discordtemplates.me/modmail-logs/{'-'.join(log_url)}"
                             #embed.add_field(name="Message Logs", value=log_url, inline=False)
                             await msg.edit(embed=embed)
-                            logging.info(msg.id)
                             return
                         await channel.send(embed=embed)
                     except discord.Forbidden:
@@ -209,7 +207,7 @@ class Core(commands.Cog):
     #@checks.is_mod()
     @commands.guild_only()
     @commands.command(
-        description="Blacklist a user from creating tickers.", usage="blacklist <member>", aliases=["block"],
+        description="Blacklist a user from creating tickets.", usage="blacklist <member>", aliases=["block"],
     )
     async def blacklist(self, ctx, *, member: discord.Member):
         blacklist = (await self.bot.get_data(ctx.guild.id))[9]
