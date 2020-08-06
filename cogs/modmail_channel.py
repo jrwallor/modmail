@@ -67,7 +67,7 @@ class ModMailEvents(commands.Cog):
                     )
                 )
                 return
-       if snippet is True:
+        if snippet is True:
             msg = tools.tag_format(msg, member)
         try:
             embed = discord.Embed(
