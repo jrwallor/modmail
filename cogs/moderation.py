@@ -63,14 +63,14 @@ class Moderation(commands.Cog):
                 )
             )
             return
-        if len(channels) > 10:
-            await ctx.send(
-                embed=discord.Embed(
-                    description="There can at most be 10 channels. Try using the command again but specify less channels.",
-                    colour=self.bot.error_colour,
-                )
-            )
-            return
+        #if len(channels) > 10:
+        #    await ctx.send(
+        #        embed=discord.Embed(
+        #            description="There can at most be 10 channels. Try using the command again but specify less channels.",
+        #            colour=self.bot.error_colour,
+        #        )
+        #    )
+        #    return
         async with self.bot.pool.acquire() as conn:
             await conn.execute(
                 "UPDATE data SET raidchannel=$1 WHERE guild=$2", [channel.id for channel in channels], ctx.guild.id,
@@ -95,14 +95,14 @@ class Moderation(commands.Cog):
                 )
             )
             return
-        if len(roles) > 10:
-            await ctx.send(
-                embed=discord.Embed(
-                    description="There can at most be 10 roles. Try using the command again but specify less roles.",
-                    colour=self.bot.error_colour,
-                )
-            )
-            return
+        #if len(roles) > 10:
+        #    await ctx.send(
+        #        embed=discord.Embed(
+        #            description="There can at most be 10 roles. Try using the command again but specify less roles.",
+        #            colour=self.bot.error_colour,
+        #        )
+        #    )
+        #    return
         async with self.bot.pool.acquire() as conn:
             await conn.execute(
                 "UPDATE data SET raidrole=$1 WHERE guild=$2", [role.id for role in roles], ctx.guild.id,
