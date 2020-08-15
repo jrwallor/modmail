@@ -79,7 +79,7 @@ class General(commands.Cog):
         )
         all_pages.append(page)
         for _, cog_name in enumerate(self.bot.cogs):
-            if cog_name in ["Owner", "Admin"]:
+            if cog_name in ["Owner", "Admin", "Moderation"]:
                 continue
             cog = self.bot.get_cog(cog_name)
             cog_commands = cog.get_commands()
