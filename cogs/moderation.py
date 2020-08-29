@@ -68,14 +68,18 @@ class Moderation(commands.Cog):
                 "UPDATE data SET raidchannel=$1 WHERE guild=$2", [channel.id for channel in channels], ctx.guild.id,
             )
         await ctx.send(
-            embed=discord.Embed(description="The channel(s) are updated successfully.", colour=self.bot.primary_colour)
+            embed=discord.Embed(
+                description="The channel(s) are updated successfully.",
+                colour=self.bot.primary_colour
+            )
         )
 
     @checks.in_database()
     @commands.has_permissions(administrator=True)
     @commands.guild_only()
     @commands.command(
-        description="Set or clear the roles to remove permissions from.",
+        description="Set or clear the roles to remove permissions from. If you have a Verification role, it must be the"
+        " first role.",
         usage="raidrole [roles]",
         hidden=True
     )
@@ -111,7 +115,8 @@ class Moderation(commands.Cog):
             except discord.Forbidden:
                 await ctx.send(
                     embed=discord.Embed(
-                        description="The changes failed to take. Update my permissions and try again or set the overwrites manually.",
+                        description="The changes failed to take. Update my permissions and try again or set the "
+                        "overwrites manually.",
                         colour=self.bot.error_colour,
                     )
                 )
@@ -136,7 +141,8 @@ class Moderation(commands.Cog):
             except discord.Forbidden:
                 await ctx.send(
                     embed=discord.Embed(
-                        description="The changes failed to take. Update my permissions and try again or set the overwrites manually.",
+                        description="The changes failed to take. Update my permissions and try again or set the "
+                        "overwrites manually.",
                         colour=self.bot.error_colour,
                     )
                 )
@@ -145,6 +151,73 @@ class Moderation(commands.Cog):
             embed=discord.Embed(description="The channels are updated successfully.", colour=self.bot.primary_colour)
         )
 
+    @checks.in_database()
+    @commands.has_permissions(ban_members=True)
+    @commands.guild_only()
+    @commands.command(
+        description="Manually verify user using the first listed role in the raidrole command.",
+        usage="verify [user]",
+        hidden=True
+    )
+    async def verify(self, ctx, member: discord.Member, *, check=None):
+        data = await self.bot.get_data(ctx.guild.id)
+        roles = data[11]
+        if check:
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f"The user(s) are not found. Please try again.", colour=self.bot.error_colour,
+                )
+            )
+            return
+        if member:
+            try:
+                user = member.id
+                role = ctx.guild.get_role(roles[0])
+                await member.add_roles(role)
+            except IndexError:
+                await ctx.send(
+                    embed=discord.Embed(
+                        description=f"The role is not found. Please try again.", colour=self.bot.error_colour,
+                    )
+                )
+                return
+        await ctx.send(
+            embed=discord.Embed(description="The role is updated successfully.", colour=self.bot.primary_colour)
+        )
+
+    @checks.in_database()
+    @commands.has_permissions(ban_members=True)
+    @commands.guild_only()
+    @commands.command(
+        description="Manually unverify user using the first listed role in the raidrole command.",
+        usage="verify [user]",
+        hidden=True
+    )
+    async def unverify(self, ctx, member: discord.Member, *, check=None):
+        data = await self.bot.get_data(ctx.guild.id)
+        roles = data[11]
+        if check:
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f"The user(s) are not found. Please try again.", colour=self.bot.error_colour,
+                )
+            )
+            return
+        if member:
+            try:
+                user = member.id
+                role = ctx.guild.get_role(roles[0])
+                await member.remove_roles(role)
+            except IndexError:
+                await ctx.send(
+                    embed=discord.Embed(
+                        description=f"The role is not found. Please try again.", colour=self.bot.error_colour,
+                    )
+                )
+                return
+        await ctx.send(
+            embed=discord.Embed(description="The role is updated successfully.", colour=self.bot.primary_colour)
+        )
 
 def setup(bot):
     bot.add_cog(Moderation(bot))
