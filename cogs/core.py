@@ -21,7 +21,7 @@ class Core(commands.Cog):
 
     @checks.is_modmail_channel()
     @checks.in_database()
-    #@checks.is_mod()
+    # @checks.is_mod()
     @commands.guild_only()
     @commands.command(
         description="Reply to the ticket, useful when anonymous messaging is enabled.",
@@ -33,7 +33,7 @@ class Core(commands.Cog):
 
     @checks.is_modmail_channel()
     @checks.in_database()
-    #@checks.is_mod()
+    # @checks.is_mod()
     @commands.guild_only()
     @commands.command(description="Reply to the ticket anonymously.", usage="areply <message>")
     async def areply(self, ctx, *, message):
@@ -111,7 +111,7 @@ class Core(commands.Cog):
                                         author = f"{' '.join(m.embeds[0].footer.text.split()[:-2])} (User)"
                                     elif m.embeds[0].author.name == "Anonymous#0000":
                                         author = f"{m.embeds[0].author.name} (Staff, {' '.join(m.embeds[0].footer.text.split()[:-2])})"
-                                    else: 
+                                    else:
                                         author = f"{m.embeds[0].author.name} (Staff)"
                                     description = m.embeds[0].description
                                     for attachment in [
@@ -132,11 +132,11 @@ class Core(commands.Cog):
                                 history, f"modmail_log_{self.bot.tools.get_modmail_user(ctx.channel)}.txt"
                             )
                             msg = await channel.send(embed=embed, file=file)
-                            #log_url = msg.attachments[0].url[39:-4]
-                            #log_url = log_url.replace("modmail_log_", "")
-                            #log_url = [hex(int(some_id))[2:] for some_id in log_url.split("/")]
-                            #log_url = f"https://modmail.xyz/logs/{'-'.join(log_url)}"
-                            #embed.add_field(name="Message Logs", value=log_url, inline=False)
+                            # log_url = msg.attachments[0].url[39:-4]
+                            # log_url = log_url.replace("modmail_log_", "")
+                            # log_url = [hex(int(some_id))[2:] for some_id in log_url.split("/")]
+                            # log_url = f"https://modmail.xyz/logs/{'-'.join(log_url)}"
+                            # embed.add_field(name="Message Logs", value=log_url, inline=False)
                             await asyncio.sleep(0.5)
                             await msg.edit(embed=embed)
                             return
@@ -220,7 +220,7 @@ class Core(commands.Cog):
             pass
 
     @checks.in_database()
-    #@checks.is_mod()
+    # @checks.is_mod()
     @commands.guild_only()
     @commands.command(
         description="Blacklist a user from creating tickets.",
@@ -242,7 +242,7 @@ class Core(commands.Cog):
         )
 
     @checks.in_database()
-    #@checks.is_mod()
+    # @checks.is_mod()
     @commands.guild_only()
     @commands.command(
         description="Whitelist a user from creating tickets.",
@@ -275,7 +275,7 @@ class Core(commands.Cog):
         )
 
     @checks.in_database()
-    #@checks.is_mod()
+    # @checks.is_mod()
     @commands.guild_only()
     @commands.command(description="View the blacklist.", usage="viewblacklist")
     async def viewblacklist(self, ctx):
