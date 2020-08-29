@@ -7,24 +7,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="theme-color" content="#1e90ff">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://modmail.netlify.com">
+    <meta property="og:url" content="https://modmail.xyz">
     <meta property="og:title" content="ModMail">
     <meta property="og:description" content="A feature-rich Discord bot for easy communication between server staff and users.">
-    <meta property="og:image" content="https://modmail.netlify.com/images/icon.png">
+    <meta property="og:image" content="https://modmail.xyz/images/icon.png">
     <title>ModMail</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css" integrity="sha384-REHJTs1r2ErKBuJB0fCK99gCYsVjwxHrSU0N7I1zl9vZbggVJXRMsv/sLlOAGb4M" crossorigin="anonymous">
-    <link rel="icon" href="images/icon.png" type="image/x-icon">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="/images/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="css/particles.css">
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.0.min.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129600306-5"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
+        gtag("config", "UA-129600306-5");
+    </script>
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark">
-            <div class="container" style="padding: 0 30px; margin: 0 auto; max-width: none;">
-                <a href="#" class="navbar-brand h1 mb-0">
-                    <img src="images/icon.png" width="40" height="40" alt="">
+            <div class="container px-2 px-md-4 my-0 mx-auto" style="max-width: none;">
+                <a href="/" class="navbar-brand h1 mb-0">
+                    <img src="/images/icon.png" width="40" height="40" alt="Icon">
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -32,51 +41,57 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto" style="font-weight: 500;">
                         <li class="nav-item active">
-                            <a class="nav-link" href="#about">About</a>
+                            <a class="nav-link" href="/">Home</a>
                         </li>
                         <li class="nav-item active">
-                            <a class="nav-link" href="#features">Features</a>
+                            <a class="nav-link" href="/premium">Premium</a>
                         </li>
                         <li class="nav-item active">
-                            <a class="nav-link" href="#getting-started">Getting Started</a>
+                            <a class="nav-link" href="/stats">Statistics</a>
                         </li>
                         <li class="nav-item active">
-                            <a class="nav-link" href="https://github.com/CHamburr/modmail">GitHub Repository</a>
+                            <a class="nav-link" href="/partners">Partners</a>
                         </li>
                         <li class="nav-item active">
-                            <a class="nav-link" href="https://discord.gg/wjWJwJB">Support Server</a>
+                            <a class="nav-link" href="/support">Support Server</a>
                         </li>
                     </ul>
-                    <a class="btn btn-outline-primary my-2 my-sm-0" href="https://discordapp.com/api/oauth2/authorize?client_id=575252669443211264&permissions=268823640&scope=bot">Invite Bot</a>
+                    <a class="btn btn-outline-primary my-2 my-sm-0" href="/invite">Invite Bot</a>
                 </div>
             </div>
         </nav>
     </header>
-    <div style="width: 100%; height: 100vh; overflow: hidden; display: table;">
+    <div class="w-100 vh-100 d-table overflow-hidden">
         <div id="particles-js"></div>
-        <div style="display: table-cell; vertical-align: middle;">
-            <div style="align-items: center; display: flex; flex-direction: column;">
-                <img src="images/icon.png" width="200vh" alt="Icon">
-                <h1 style="margin: 0.5em 0;">ModMail</h1>
-                <h3 style="font-weight: 500; letter-spacing: 0.1em; line-height: 1.5em; text-align: center;">A feature-rich Discord bot<br>for easy communication<br>between server staff and users.</h3>
+        <div class="d-table-cell align-middle">
+            <div class="align-items-center d-flex flex-column">
+                <img src="/images/icon.png" width="200vh" alt="Icon">
+                <h1 class="my-3">ModMail</h1>
+                <h3 class="text-center" style="font-weight: 500; letter-spacing: 0.1em; line-height: 1.5em;">
+                    A feature-rich Discord bot
+                    <br>
+                    for easy communication
+                    <br>
+                    between server staff and users.
+                </h3>
             </div>
-            <div style="text-align: center;">
-                <a class="btn btn-primary btn-lg" href="https://discordapp.com/api/oauth2/authorize?client_id=575252669443211264&permissions=268823640&scope=bot" style="display: inline-block; margin: 0.5em;"><i class="fas fa-plus"></i> Invite Bot</a>
-                <a class="btn btn-success btn-lg" href="https://discord.gg/wjWJwJB" style="display: inline-block; margin: 0.5em;"><i class="fas fa-question"></i> Support Server</a>
+            <div class="text-center">
+                <a class="btn btn-primary btn-lg d-inline-block m-2" href="/invite"><i class="fas fa-plus"></i> Invite Bot</a>
+                <a class="btn btn-success btn-lg d-inline-block m-2" href="/support"><i class="fas fa-question"></i> Support Server</a>
                 <br>
-                <a class="btn btn-info btn-lg" href="https://github.com/CHamburr/modmail" style="display: inline-block; margin: 0.5em;"><i class="fab fa-github"></i> GitHub Repository</a>
+                <a class="btn btn-info btn-lg d-inline-block m-2" href="/repository"><i class="fab fa-github"></i> GitHub Repository</a>
             </div>
         </div>
     </div>
     <hr>
-    <div class="container" style="padding: 20px 10%;">
+    <div class="container py-3" style="padding-left: 10%; padding-right: 10%;">
         <a id="about"><h2>About</h2></a>
-        <p style="margin-top: 20px;">ModMail is a feature-rich Discord bot designed to enable your server members to contact staff easily. A new channel is created whenever a user messages the bot, and the channel will serve as a shared inbox for seamless communication between staff and the user.</p>
+        <p class="mt-3">ModMail is a feature-rich Discord bot designed to enable your server members to contact staff easily. A new channel is created whenever a user messages the bot, and the channel will serve as a shared inbox for seamless communication between staff and the user.</p>
     </div>
     <hr>
-    <div class="container" style="padding: 20px 10%;">
+    <div class="container py-3" style="padding-left: 10%; padding-right: 10%;">
         <a id="features"><h2>Features</h2></a>
-        <ul style="margin-top: 20px;">
+        <ul class="mt-3">
             <li>Extremely easy interactive setup.</li>
             <li>Fancy, but organised design for you and server members.</li>
             <li>Highly configurable, adjust things to your liking.</li>
@@ -86,151 +101,48 @@
         </ul>
     </div>
     <hr>
-    <div class="container" style="padding: 20px 10%;">
+    <div class="container py-3" style="padding-left: 10%; padding-right: 10%;">
         <a id="getting-started"><h2>Getting Started</h2></a>
-        <p style="margin-top: 20px;">Follow these steps to get the bot all ready to serve your server!</p>
+        <p class="mt-3">Follow these steps to get the bot all ready to serve your server!</p>
         <ol>
-            <li>Invite the bot with <a href="https://discordapp.com/api/oauth2/authorize?client_id={self.bot.user.id}&permissions=268823640&scope=bot">this link</a>.</li>
+            <li>Invite the bot with <a href="/invite">this link</a>.</li>
             <li>Run <code>=setup</code>, there will be an interactive guide.</li>
             <li>All done! For a full list of commands, see <code>=help</code>.</li>
         </ol>
     </div>
     <hr>
-    <div class="container" style="padding: 20px 10%;">
-        <a id="partners"><h2>Partners</h2></a>
-        <div class="row" style="margin-top: 20px;">
-            <div class="col-12 col-md-6 col-lg-4" style="margin: 0.5em 0; padding: 0 0.5em;">
-                <div class="card bg-dark" style="height: 100%;">
-                    <img src="https://discordtemplates.me/static/img/icon.png" class="card-img-top" alt="Logo">
-                    <div class="card-body">
-                        <h5 class="card-title" style="text-align: center;">Discord Templates</h5>
-                        <br>
-                        <p>Discord Templates is the place for you to discover a huge variety of Discord server templates for all purposes.</p>
-                        <br>
-                        <a class="btn btn-secondary" href="https://discordtemplates.me">Learn More</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4" style="margin: 0.5em 0; padding: 0 0.5em;">
-                <div class="card bg-dark" style="height: 100%;">
-                    <img src="https://cdn.discordapp.com/icons/227900298549657601/a_74313704119f88dc252e9b0b98c3ab25.gif" class="card-img-top" alt="Logo">
-                    <div class="card-body">
-                        <h5 class="card-title" style="text-align: center;">Otzdarva's Dungeon</h5>
-                        <br>
-                        <p>Otzdarva's Dungeon is a community for the Dead by Daylight streamer Otzdarva, also known for being a PUBG and Dark Souls YouTuber in the past.</p>
-                        <br>
-                        <a class="btn btn-secondary" href="https://discord.gg/otzdarva">Learn More</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4" style="margin: 0.5em 0; padding: 0 0.5em;">
-                <div class="card bg-dark" style="height: 100%;">
-                    <img src="https://cdn.discordapp.com/icons/162891400684371968/a_4363040f917b4920a2e78da1e302d9dc.gif" class="card-img-top" alt="Logo">
-                    <div class="card-body">
-                        <h5 class="card-title" style="text-align: center;">DOOM</h5>
-                        <br>
-                        <p>Hell’s armies have invaded Earth. Become the Slayer in an epic single-player campaign to conquer demons across dimensions and stop the final destruction of humanity. The only thing they fear... is you. RAZE HELL in DOOM Eternal!</p>
-                        <br>
-                        <a class="btn btn-secondary" href="https://discord.gg/doom">Learn More</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4" style="margin: 0.5em 0; padding: 0 0.5em;">
-                <div class="card bg-dark" style="height: 100%;">
-                    <img src="https://cdn.discordapp.com/icons/209815380946845697/f298c64717cede4589a1503d12d40fb0.png" class="card-img-top" alt="Logo">
-                    <div class="card-body">
-                        <h5 class="card-title" style="text-align: center;">Sea of Thieves</h5>
-                        <br>
-                        <p>One of the longest running and largest community-run Sea of Thieves Discord servers. A great and most of all welcoming place to chat about Sea of Thieves and maybe find a few crew mates along the way.</p>
-                        <br>
-                        <a class="btn btn-secondary" href="https://discord.gg/seaofthievescommunity">Learn More</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4" style="margin: 0.5em 0; padding: 0 0.5em;">
-                <div class="card bg-dark" style="height: 100%;">
-                    <img src="https://cdn.discordapp.com/icons/580534040692654101/a_0a6f7616c7d9b98f740809dbea272967.gif" class="card-img-top" alt="Logo">
-                    <div class="card-body">
-                        <h5 class="card-title" style="text-align: center;">Underlords</h5>
-                        <br>
-                        <p>Underlords Discord server acts as a secondary platform to r/Underlords where users can have casual chit-chat, give suggestions, share tactics and discuss everything related to Underlords.</p>
-                        <br>
-                        <a class="btn btn-secondary" href="https://discord.gg/underlords">Learn More</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4" style="margin: 0.5em 0; padding: 0 0.5em;">
-                <div class="card bg-dark" style="height: 100%;">
-                    <img src="https://cdn.discordapp.com/icons/447732123340767232/5a1064a156540e36e22a38abc527c737.png" class="card-img-top" alt="Logo">
-                    <div class="card-body">
-                        <h5 class="card-title" style="text-align: center;">CH's amburr</h5>
-                        <br>
-                        <p>CH's amburr is my personal community server. It is a fun and friendly place where you can talk about everything cool.</p>
-                        <br>
-                        <a class="btn btn-secondary" href="https://discord.gg/TYe3U4w">Learn More</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4" style="margin: 0.5em 0; padding: 0 0.5em;">
-                <div class="card bg-dark" style="height: 100%;">
-                    <img src="https://cdn.discordapp.com/avatars/432533456807919639/6b2a1311b54a1d3b3cec1fb67ef94ed7.png" class="card-img-top" alt="Logo">
-                    <div class="card-body">
-                        <h5 class="card-title" style="text-align: center;">Member Count</h5>
-                        <br>
-                        <p>Member Count is another bot that I am actively developing on. It shows stats on your server using channel names.</p>
-                        <br>
-                        <a class="btn btn-secondary" href="https://discordbots.org/bot/membercount">Learn More</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div class="container" style="padding: 20px 10%;">
+    <div class="container py-3" style="padding-left: 10%; padding-right: 10%;">
         <a id="widgets"><h2>Widgets</h2></a>
         <div class="row">
-            <div class="col-12 col-md-6 col-lg-4" style="margin: 0.5em 0; padding: 0 0.5em;">
+            <div class="col-12 col-md-6 col-lg-4 my-2 px-2">
                 <a href="https://discordbots.org/bot/575252669443211264">
-                    <img src="https://discordbots.org/api/widget/575252669443211264.svg" alt="Discord Bot List" style="width: 100%;">
+                    <img class="w-100" src="https://discordbots.org/api/widget/575252669443211264.svg" alt="Discord Bot List">
                 </a>
             </div>
-            <div class="col-12 col-md-6 col-lg-4" style="margin: 0.5em 0; padding: 0 0.5em;">
+            <div class="col-12 col-md-6 col-lg-4 my-2 px-2">
                 <a href="https://botsfordiscord.com/bots/575252669443211264">
-                    <img src="https://botsfordiscord.com/api/bot/575252669443211264/widget?theme=dark" alt="Bots for Discord" style="width: 100%;">
+                    <img class="w-100" src="https://botsfordiscord.com/api/bot/575252669443211264/widget?theme=dark" alt="Bots for Discord">
                 </a>
             </div>
-            <div class="col-12 col-md-6 col-lg-4" style="margin: 0.5em 0; padding: 0 0.5em;">
+            <div class="col-12 col-md-6 col-lg-4 my-2 px-2">
                 <a href="https://bots.ondiscord.xyz/bots/575252669443211264">
-                    <img src="https://bots.ondiscord.xyz/bots/575252669443211264/embed?theme=dark&showGuilds=true" alt="Bots on Discord">
+                    <img class="w-100" src="https://bots.ondiscord.xyz/bots/575252669443211264/embed?theme=dark&showGuilds=true" alt="Bots on Discord">
                 </a>
             </div>
         </div>
     </div>
     <div>
         <a href="#" id="scroll-button">
-            <i class="fas fa-chevron-up fa-2x" style="color: white;"></i>
+            <i class="fas fa-chevron-up fa-2x text-white"></i>
         </a>
     </div>
-    <div style="background-color: #23272a; margin-top: 20px; padding: 1em 0;">
-        <footer style="text-align: center;">
-            <p>©2019-2020 CHamburr#2591</p>
-        </footer>
-    </div>
+    <footer class="mt-4 px-0 py-3 text-center">
+        <p>©2019-2020 CHamburr#2591</p>
+    </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="/js/scroll.js"></script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="js/particles.js"></script>
-    <script>
-        $(window).scroll(function() {
-            if ($(window).scrollTop() > 300) $("#scroll-button").addClass("show");
-            else $("#scroll-button").removeClass("show");
-        });
-        $(document).ready(function() {
-            $("#scroll-button").click(function(e) {
-                e.preventDefault();
-                $("html, body").animate({scrollTop: 0}, "300");
-            });
-        });
-    </script>
+    <script src="/js/particles.js"></script>
 </body>
 </html>

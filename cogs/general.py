@@ -72,9 +72,8 @@ class General(commands.Cog):
         page.add_field(
             name="Getting Started",
             value="Follow these steps to get the bot all ready to serve your server!\n1. Invite the bot with "
-            f"[this link](https://discordapp.com/api/oauth2/authorize?client_id={self.bot.user.id}"
-            f"&permissions=268823640&scope=bot)\n2. Run `{ctx.prefix}setup`, there will be an interactive guide.\n"
-            f"3. All done! For a full list of commands, see `{ctx.prefix}help`.",
+            f"[this link](https://modmail.xyz/invite)\n2. Run `{ctx.prefix}setup`, there will be an interactive guide."
+            f"\n3. All done! For a full list of commands, see `{ctx.prefix}help`.",
             inline=False,
         )
         all_pages.append(page)
@@ -127,7 +126,9 @@ class General(commands.Cog):
         return fmt.format(d=days, h=hours, m=minutes, s=seconds)
 
     @commands.command(
-        description="See some super cool statistics about me.", usage="stats", aliases=["statistics", "info"],
+        description="See some super cool statistics about me.",
+        usage="stats",
+        aliases=["statistics", "info"],
     )
     async def stats(self, ctx):
         guilds = sum(await self.bot.cogs["Communication"].handler("guild_count", self.bot.cluster_count))
@@ -152,12 +153,15 @@ class General(commands.Cog):
         embed.add_field(name="discord.py Version", value=discord.__version__)
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         embed.set_footer(
-            text=f"Made with ❤ using discord.py", icon_url="https://www.python.org/static/opengraph-icon-200x200.png",
+            text=f"Made with ❤ using discord.py",
+            icon_url="https://www.python.org/static/opengraph-icon-200x200.png",
         )
         await ctx.send(embed=embed)
 
     @commands.command(
-        description="See the amazing stuff we have partnered with.", usage="partners", aliases=["partner"],
+        description="See the amazing stuff we have partnered with.",
+        usage="partners",
+        aliases=["partner"],
     )
     async def partners(self, ctx):
         all_pages = []
@@ -170,6 +174,18 @@ class General(commands.Cog):
         page.add_field(name="Link", value="https://discordtemplates.me")
         page.set_thumbnail(
             url="https://cdn.discordapp.com/icons/696179394057732237/cf54e042456638eba2ea5abddfc7910e.png"
+        )
+        all_pages.append(page)
+        page = discord.Embed(
+            title="TGG's Gorilla Gang",
+            description="In this server owned by TGG, a popular Australian gaming YouTuber who is best known for his "
+            "GTA content, you will find tons of GTA online based content to have fun with including LFG channels, "
+            "GTA discussion channels, and more!",
+            colour=self.bot.primary_colour,
+        )
+        page.add_field(name="Link", value="https://discord.gg/gorillagang")
+        page.set_thumbnail(
+            url="https://cdn.discordapp.com/icons/722716210604671026/3b65b43ae088894f424129d71b78ebf8.png"
         )
         all_pages.append(page)
         page = discord.Embed(
@@ -216,7 +232,7 @@ class General(commands.Cog):
         )
         page.add_field(name="Link", value="https://discord.gg/seaofthievescommunity")
         page.set_thumbnail(
-            url="https://cdn.discordapp.com/icons/209815380946845697/f298c64717cede4589a1503d12d40fb0.png"
+            url="https://cdn.discordapp.com/icons/209815380946845697/a_04c8ae80dce6e6ef1e3d574dca61b4a2.png"
         )
         all_pages.append(page)
         page = discord.Embed(
@@ -249,7 +265,7 @@ class General(commands.Cog):
         )
         page.add_field(name="Link", value="https://discordbots.org/bot/membercount")
         page.set_thumbnail(
-            url="https://cdn.discordapp.com/avatars/432533456807919639/6b2a1311b54a1d3b3cec1fb67ef94ed7.png"
+            url="https://cdn.discordapp.com/icons/496964682972659712/0b61c5cb7b9ace8f8f5e2fef37cacb5b.png"
         )
         all_pages.append(page)
         for embed in all_pages:
@@ -263,8 +279,7 @@ class General(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 title="Invite Link",
-                description=f"https://discordapp.com/api/oauth2/authorize?client_id={self.bot.user.id}"
-                "&permissions=268823640&scope=bot",
+                description=f"https://modmail.xyz/invite",
                 colour=self.bot.primary_colour,
             )
         )
@@ -284,7 +299,7 @@ class General(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 title="Website",
-                description=f"https://modmail.netlify.com",
+                description=f"https://modmail.xyz",
                 colour=self.bot.primary_colour,
             )
         )
@@ -314,7 +329,10 @@ class General(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(
-        description="Get the top 15 servers using this bot.", aliases=["topguilds"], usage="topservers", hidden=True,
+        description="Get the top 15 servers using this bot.",
+        aliases=["topguilds"],
+        usage="topservers",
+        hidden=True,
     )
     async def topservers(self, ctx):
         data = await self.bot.cogs["Communication"].handler("get_top_guilds", self.bot.cluster_count)
@@ -327,7 +345,9 @@ class General(commands.Cog):
             top_guilds.append(f"#{str(index + 1)} {guild['name']} ({guild['member_count']} members)")
         await ctx.send(
             embed=discord.Embed(
-                title="Top 15 Servers", description="\n".join(top_guilds), colour=self.bot.primary_colour,
+                title="Top 15 Servers",
+                description="\n".join(top_guilds),
+                colour=self.bot.primary_colour,
             )
         )
 

@@ -6,10 +6,9 @@ import traceback
 import aiohttp
 import aioredis
 import asyncpg
+import config
 
 from discord.ext import commands
-
-import config
 
 from utils import prometheus, tools
 
@@ -23,14 +22,11 @@ class ModMail(commands.AutoShardedBot):
         self.session = aiohttp.ClientSession(loop=self.loop)
         self.cluster = kwargs.get("cluster_id")
         self.cluster_count = kwargs.get("cluster_count")
+        self.version = kwargs.get("version")
 
     @property
     def uptime(self):
         return datetime.datetime.utcnow() - self.start_time
-
-    @property
-    def version(self):
-        return config.__version__
 
     @property
     def config(self):

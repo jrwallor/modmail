@@ -3,11 +3,10 @@ import json
 import logging
 import sys
 
+import config
 import sentry_sdk
 
 from discord.ext import commands
-
-import config
 
 from classes.bot import ModMail
 from utils.tools import get_guild_prefix
@@ -52,6 +51,7 @@ bot = ModMail(
     shard_count=shard_count,
     cluster_id=cluster_id,
     cluster_count=cluster_count,
+    version='2.0.1'
 )
 
 
