@@ -90,6 +90,11 @@ class ModMailEvents(commands.Cog):
                 files.append(discord.File(saved_file, file.filename))
             message2 = await member.send(embed=embed, files=files)
             embed.title = "Message Sent"
+            if embed.author.name == "Anonymous#0000":
+                embed.set_author(
+                    name=f"Anonymous#0000 | {message.author.name}#{message.author.discriminator}",
+                    icon_url="https://cdn.discordapp.com/embed/avatars/0.png",
+               )
             embed.set_footer(text=f"{member.name}#{member.discriminator} | {member.id}", icon_url=member.avatar_url)
             for count, attachment in enumerate([attachment.url for attachment in message2.attachments], start=1):
                 embed.add_field(name=f"Attachment {count}", value=attachment, inline=False)
