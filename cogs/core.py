@@ -109,8 +109,6 @@ class Core(commands.Cog):
                                 if m.author.bot:
                                     if not m.embeds[0].author.name:
                                         author = f"{' '.join(m.embeds[0].footer.text.split()[:-2])} (User)"
-                                    elif m.embeds[0].author.name == "Anonymous#0000":
-                                        author = f"{m.embeds[0].author.name} (Staff, {' '.join(m.embeds[0].footer.text.split()[:-2])})"
                                     else:
                                         author = f"{m.embeds[0].author.name} (Staff)"
                                     description = m.embeds[0].description
