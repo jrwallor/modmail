@@ -1,11 +1,14 @@
 # Bot's token
 token = ""
 
-# DiscordBotList token
-dbl_token = ""
+# Top.gg token
+topgg_token = ""
 
 # Discord Bots token
 dbots_token = ""
+
+# Discord Bot List token
+dbl_token = ""
 
 # Bots on Discord token
 bod_token = ""
@@ -34,8 +37,8 @@ database = {
     "port": 5432,
 }
 
-# Number of shards for each cluster
-shards_per_cluster = 4
+# Number of clusters
+clusters = 1
 
 # Additional shards to launch
 additional_shards = 0

@@ -143,7 +143,7 @@ class Communication(commands.Cog):
             return
         payload = {
             "output": [
-                self.to_dict(guild, ["guild"], ["text_channels", "icon_url", "default_role"])
+                self.to_dict(guild, ["guild"], ["text_channels", "icon_url", "default_role", "member_count"])
                 for guild in self.bot.guilds
                 if guild.get_member(user_id) is not None
             ],
@@ -195,8 +195,8 @@ class Communication(commands.Cog):
         payload = {"output": self.to_dict(channel, ["channel", "guild"]), "command_id": command_id}
         await self.bot.redis.execute("PUBLISH", self.ipc_channel, json.dumps(payload))
 
-    async def get_top_guilds(self, command_id):
-        guilds = sorted(self.bot.guilds, key=lambda x: x.member_count, reverse=True)[:15]
+    async def get_top_guilds(self, count, command_id):
+        guilds = sorted(self.bot.guilds, key=lambda x: x.member_count, reverse=True)[:count]
         payload = {
             "output": [self.to_dict(guild, ["guild"], ["member_count"]) for guild in guilds],
             "command_id": command_id,
@@ -204,11 +204,14 @@ class Communication(commands.Cog):
         await self.bot.redis.execute("PUBLISH", self.ipc_channel, json.dumps(payload))
 
     async def find_guild(self, name, command_id):
-        guilds = []
-        for guild in self.bot.guilds:
-            if guild.name.lower().count(name.lower()) > 0:
-                guilds.append(f"{guild.name} `{guild.id}`")
-        payload = {"output": guilds, "command_id": command_id}
+        payload = {
+            "output": [
+                self.to_dict(guild, ["guild"], ["member_count"])
+                for guild in self.bot.guilds
+                if guild.name.lower().count(name.lower()) > 0
+            ],
+            "command_id": command_id,
+        }
         await self.bot.redis.execute("PUBLISH", self.ipc_channel, json.dumps(payload))
 
     async def invite_guild(self, guild_id, command_id):

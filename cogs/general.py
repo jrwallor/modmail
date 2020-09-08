@@ -53,8 +53,7 @@ class General(commands.Cog):
         page.set_footer(text="Use the reactions to flip pages.")
         page.add_field(
             name="Invite",
-            value=f"https://discordapp.com/api/oauth2/authorize?client_id={self.bot.user.id}"
-            "&permissions=268823640&scope=bot",
+            value="https://modmail.xyz/invite",
             inline=False,
         )
         page.add_field(name="Support Server", value="https://discord.gg/wjWJwJB", inline=False)
@@ -153,7 +152,7 @@ class General(commands.Cog):
         embed.add_field(name="discord.py Version", value=discord.__version__)
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         embed.set_footer(
-            text=f"Made with ❤ using discord.py",
+            text="Made with ❤ using discord.py",
             icon_url="https://www.python.org/static/opengraph-icon-200x200.png",
         )
         await ctx.send(embed=embed)
@@ -174,6 +173,17 @@ class General(commands.Cog):
         page.add_field(name="Link", value="https://discordtemplates.me")
         page.set_thumbnail(
             url="https://cdn.discordapp.com/icons/696179394057732237/cf54e042456638eba2ea5abddfc7910e.png"
+        )
+        all_pages.append(page)
+        page = discord.Embed(
+            title="Eden of Gaming",
+            description="Eden of Gaming is a global gaming community that aims to share knowledge and build "
+            "relationships between members and fellow global gaming communities.",
+            colour=self.bot.primary_colour,
+        )
+        page.add_field(name="Link", value="https://discord.gg/edenofgaming")
+        page.set_thumbnail(
+            url="https://cdn.discordapp.com/icons/457151179072339978/a_6b2bf427b3f07f209386dcf85ea94a9a.gif"
         )
         all_pages.append(page)
         page = discord.Embed(
@@ -279,7 +289,7 @@ class General(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 title="Invite Link",
-                description=f"https://modmail.xyz/invite",
+                description="https://modmail.xyz/invite",
                 colour=self.bot.primary_colour,
             )
         )
@@ -299,7 +309,7 @@ class General(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 title="Website",
-                description=f"https://modmail.xyz",
+                description="https://modmail.xyz",
                 colour=self.bot.primary_colour,
             )
         )
@@ -308,45 +318,8 @@ class General(commands.Cog):
     async def source(self, ctx):
         await ctx.send(
             embed=discord.Embed(
-                title="Github Repository",
-                description=f"https://github.com/CHamburr/modmail",
-                colour=self.bot.primary_colour,
-            )
-        )
-
-    @commands.command(description="Usage statistics of the bot.", usage="usagestats", hidden=True)
-    async def usagestats(self, ctx):
-        embed = discord.Embed(
-            title="Usage Statistics",
-            description="Bot usage statistics since 1 January 2020.",
-            colour=self.bot.primary_colour,
-        )
-        async with self.bot.pool.acquire() as conn:
-            res = await conn.fetchrow("SELECT commands, messages, tickets FROM stats")
-        embed.add_field(name="Total commands", value=str(res[0]), inline=False)
-        embed.add_field(name="Total messages", value=str(res[1]), inline=False)
-        embed.add_field(name="Total tickets", value=str(res[2]), inline=False)
-        await ctx.send(embed=embed)
-
-    @commands.command(
-        description="Get the top 15 servers using this bot.",
-        aliases=["topguilds"],
-        usage="topservers",
-        hidden=True,
-    )
-    async def topservers(self, ctx):
-        data = await self.bot.cogs["Communication"].handler("get_top_guilds", self.bot.cluster_count)
-        guilds = []
-        for chunk in data:
-            guilds.extend(chunk)
-        guilds = sorted(guilds, key=lambda x: x["member_count"], reverse=True)[:15]
-        top_guilds = []
-        for index, guild in enumerate(guilds):
-            top_guilds.append(f"#{str(index + 1)} {guild['name']} ({guild['member_count']} members)")
-        await ctx.send(
-            embed=discord.Embed(
-                title="Top 15 Servers",
-                description="\n".join(top_guilds),
+                title="GitHub Repository",
+                description="https://github.com/CHamburr/modmail",
                 colour=self.bot.primary_colour,
             )
         )
