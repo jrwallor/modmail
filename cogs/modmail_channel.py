@@ -6,7 +6,7 @@ import discord
 
 from discord.ext import commands
 
-from utils import checks, tools
+from utils import checks
 
 log = logging.getLogger(__name__)
 
@@ -43,7 +43,7 @@ class ModMailEvents(commands.Cog):
 
 
     async def send_mail_mod(self, message, prefix, anon: bool = False, msg: str = None, snippet: bool = False):
-        self.bot.stats_messages += 1
+        self.bot.prom.tickets_message_counter.inc()
         data = await self.bot.get_data(message.guild.id)
         if self.bot.tools.get_modmail_user(message.channel) in data[9]:
             await message.channel.send(
@@ -68,7 +68,7 @@ class ModMailEvents(commands.Cog):
                 )
                 return
         if snippet is True:
-            msg = tools.tag_format(msg, member)
+            msg = self.bot.tools.tag_format(msg, member)
         try:
             embed = discord.Embed(
                 title="Message Received",

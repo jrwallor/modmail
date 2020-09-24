@@ -13,12 +13,13 @@ log = logging.getLogger(__name__)
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.dbl_auth = {"Authorization": bot.config.dbl_token, "Content-Type": "application/json"}
+        self.topgg_auth = {"Authorization": bot.config.topgg_token, "Content-Type": "application/json"}
         self.dbots_auth = {"Authorization": bot.config.dbots_token, "Content-Type": "application/json"}
+        self.dbl_auth = {"Authorization": bot.config.dbl_token, "Content-Type": "application/json"}
         self.bod_auth = {"Authorization": bot.config.bod_token, "Content-Type": "application/json"}
         self.bfd_auth = {"Authorization": bot.config.bfd_token, "Content-Type": "application/json"}
         self.dboats_auth = {"Authorization": bot.config.dboats_token, "Content-Type": "application/json"}
-        if self.bot.config.testing is False:
+        if self.bot.config.testing is False and self.bot.cluster == 1:
             self.stats_updates = bot.loop.create_task(self.stats_updater())
         self.bot_stats_updates = bot.loop.create_task(self.bot_stats_updater())
         self.bot_categories_updates = bot.loop.create_task(self.bot_categories_updater())
@@ -33,12 +34,17 @@ class Events(commands.Cog):
             await self.bot.session.post(
                 f"https://top.gg/api/bots/{self.bot.user.id}/stats",
                 data=json.dumps({"server_count": guilds, "shard_count": self.bot.shard_count}),
-                headers=self.dbl_auth,
+                headers=self.topgg_auth,
             )
             await self.bot.session.post(
                 f"https://discord.bots.gg/api/v1/bots/{self.bot.user.id}/stats",
                 data=json.dumps({"guildCount": guilds, "shardCount": self.bot.shard_count}),
                 headers=self.dbots_auth,
+            )
+            await self.bot.session.post(
+                f"https://discordbotlist.com/api/v1/bots/{self.bot.user.id}/stats",
+                data=json.dumps({"guilds": guilds}),
+                headers=self.dbl_auth,
             )
             await self.bot.session.post(
                 f"https://bots.ondiscord.xyz/bot-api/bots/{self.bot.user.id}/guilds",
@@ -60,16 +66,8 @@ class Events(commands.Cog):
     async def bot_stats_updater(self):
         while True:
             async with self.bot.pool.acquire() as conn:
-                await conn.execute(
-                    "UPDATE stats SET commands=commands+$1, messages=messages+$2, tickets=tickets+$3",
-                    self.bot.stats_commands,
-                    self.bot.stats_messages,
-                    self.bot.stats_tickets,
-                )
                 res = await conn.fetch("SELECT identifier, category FROM ban")
-            self.bot.stats_commands = 0
-            self.bot.stats_messages = 0
-            self.bot.stats_tickets = 0
+                res2 = await conn.fetch("SELECT identifier, expiry FROM premium WHERE expiry IS NOT NULL")
             self.banned_users = []
             self.banned_guilds = []
             for row in res:
@@ -77,6 +75,11 @@ class Events(commands.Cog):
                     self.banned_users.append(row[0])
                 elif row[1] == 1:
                     self.banned_guilds.append(row[0])
+            if self.bot.cluster == 1:
+                timestamp = int(datetime.datetime.utcnow().timestamp() * 1000)
+                for row in res2:
+                    if row[1] < timestamp:
+                        await self.bot.tools.wipe_premium(self.bot, row[0])
             await asyncio.sleep(60)
 
     async def bot_categories_updater(self):
@@ -189,7 +192,6 @@ class Events(commands.Cog):
         ctx = await self.bot.get_context(message)
         if not ctx.command:
             return
-        self.bot.stats_commands += 1
         self.bot.prom.commands_counter.labels(name=ctx.command.name).inc()
         if message.guild:
             if message.guild.id in self.bot.banned_guilds:

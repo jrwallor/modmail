@@ -81,9 +81,6 @@ class ModMail(commands.AutoShardedBot):
     all_category = []
     banned_guilds = []
     banned_users = []
-    stats_commands = 0
-    stats_messages = 0
-    stats_tickets = 0
 
     async def connect_redis(self):
         self.redis = await aioredis.create_pool("redis://localhost", minsize=5, maxsize=10, loop=self.loop, db=0)
@@ -94,12 +91,12 @@ class ModMail(commands.AutoShardedBot):
                 break
 
     async def connect_postgres(self):
-        self.pool = await asyncpg.create_pool(**self.config.database, max_size=20, command_timeout=60)
+        self.pool = await asyncpg.create_pool(**self.config.database, max_size=50, command_timeout=60)
 
     async def connect_prometheus(self):
         self.prom = prometheus
         if self.config.testing is False:
-            self.prom.start(self)
+            await self.prom.start(self)
 
     async def start_bot(self):
         await self.connect_redis()
@@ -108,7 +105,6 @@ class ModMail(commands.AutoShardedBot):
         async with self.pool.acquire() as conn:
             data = await conn.fetch("SELECT guild, prefix, category FROM data")
             bans = await conn.fetch("SELECT identifier, category FROM ban")
-            await conn.execute("INSERT INTO stats SELECT 0, 0, 0 WHERE NOT EXISTS (SELECT * FROM stats)")
         for row in data:
             self.all_prefix[row[0]] = row[1]
             if row[2]:

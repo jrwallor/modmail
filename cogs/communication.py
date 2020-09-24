@@ -47,7 +47,6 @@ class Communication(commands.Cog):
                 "output": f"```{type(e).__name__} - {e}```",
                 "command_id": payload["command_id"],
             }
-            log.info(json.dumps(new_payload))
             await self.bot.redis.execute("PUBLISH", self.ipc_channel, json.dumps(new_payload))
 
     async def event_handler(self):
@@ -143,7 +142,7 @@ class Communication(commands.Cog):
             return
         payload = {
             "output": [
-                self.to_dict(guild, ["guild"], ["text_channels", "icon_url", "default_role"])
+                self.to_dict(guild, ["guild"], ["text_channels", "icon_url", "default_role", "member_count"])
                 for guild in self.bot.guilds
                 if guild.get_member(user_id) is not None
             ],
@@ -195,8 +194,8 @@ class Communication(commands.Cog):
         payload = {"output": self.to_dict(channel, ["channel", "guild"]), "command_id": command_id}
         await self.bot.redis.execute("PUBLISH", self.ipc_channel, json.dumps(payload))
 
-    async def get_top_guilds(self, command_id):
-        guilds = sorted(self.bot.guilds, key=lambda x: x.member_count, reverse=True)[:15]
+    async def get_top_guilds(self, count, command_id):
+        guilds = sorted(self.bot.guilds, key=lambda x: x.member_count, reverse=True)[:count]
         payload = {
             "output": [self.to_dict(guild, ["guild"], ["member_count"]) for guild in guilds],
             "command_id": command_id,
@@ -204,11 +203,14 @@ class Communication(commands.Cog):
         await self.bot.redis.execute("PUBLISH", self.ipc_channel, json.dumps(payload))
 
     async def find_guild(self, name, command_id):
-        guilds = []
-        for guild in self.bot.guilds:
-            if guild.name.lower().count(name.lower()) > 0:
-                guilds.append(f"{guild.name} `{guild.id}`")
-        payload = {"output": guilds, "command_id": command_id}
+        payload = {
+            "output": [
+                self.to_dict(guild, ["guild"], ["member_count"])
+                for guild in self.bot.guilds
+                if guild.name.lower().count(name.lower()) > 0
+            ],
+            "command_id": command_id,
+        }
         await self.bot.redis.execute("PUBLISH", self.ipc_channel, json.dumps(payload))
 
     async def invite_guild(self, guild_id, command_id):
@@ -264,7 +266,7 @@ class Communication(commands.Cog):
         }
         await self.bot.redis.execute("PUBLISH", self.ipc_channel, json.dumps(payload))
 
-    async def handler(self, action, expected_count, args=None, _timeout=1, scope="bot", cluster=None):
+    async def handler(self, action, expected_count, args=None, _timeout=2, scope="bot", cluster=None):
         command_id = f"{uuid4()}"
         self._messages[command_id] = []
         payload = {"scope": scope, "action": action, "command_id": command_id}
@@ -276,7 +278,7 @@ class Communication(commands.Cog):
         try:
             async with timeout(_timeout):
                 while len(self._messages[command_id]) < expected_count:
-                    await asyncio.sleep(0.05)
+                    await asyncio.sleep(0.1)
         except asyncio.TimeoutError:
             pass
         return self._messages.pop(command_id, None)

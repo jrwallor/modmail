@@ -7,6 +7,7 @@ import discord
 
 from discord.ext import commands
 
+from classes import converters
 from utils import checks
 from utils.paginator import Paginator
 
@@ -20,20 +21,24 @@ class Admin(commands.Cog):
     @checks.is_admin()
     @commands.command(
         description="Get a list of servers with the specified name.",
-        usage="findserver <name>",
+        usage="findserver [member count] <name>",
         hidden=True,
     )
-    async def findserver(self, ctx, *, name: str):
+    async def findserver(self, ctx, count: Optional[bool], *, name: str):
         data = await self.bot.cogs["Communication"].handler("find_guild", self.bot.cluster_count, {"name": name})
         guilds = []
         for chunk in data:
             guilds.extend(chunk)
+        if count:
+            guilds = [f"{guild['name']} `{guild['id']}` ({guild['member_count']} members)" for guild in guilds]
+        else:
+            guilds = [f"{guild['name']} `{guild['id']}`" for guild in guilds]
         if len(guilds) == 0:
             await ctx.send(embed=discord.Embed(description="No such guild was found.", colour=self.bot.error_colour))
             return
         all_pages = []
         for chunk in [guilds[i : i + 20] for i in range(0, len(guilds), 20)]:
-            page = discord.Embed(title="Guilds", colour=self.bot.primary_colour)
+            page = discord.Embed(title="Servers", colour=self.bot.primary_colour)
             for guild in chunk:
                 if page.description == discord.Embed.Empty:
                     page.description = guild
@@ -51,23 +56,24 @@ class Admin(commands.Cog):
 
     @checks.is_admin()
     @commands.command(
-        description="Get a list of servers the bot shares with the user.", usage="sharedservers <user>", hidden=True
+        description="Get a list of servers the bot shares with the user.",
+        usage="sharedservers [member count] <user>",
+        hidden=True,
     )
-    async def sharedservers(self, ctx, *, user_id: int):
-        user = await self.bot.cogs["Communication"].handler("get_user", 1, {"user_id": user_id})
-        if not user:
-            await ctx.send(embed=discord.Embed(description="No such user was found.", colour=self.bot.error_colour))
-            return
+    async def sharedservers(self, ctx, count: Optional[bool], *, user: converters.GlobalUser):
         data = await self.bot.cogs["Communication"].handler(
-            "get_user_guilds", self.bot.cluster_count, {"user_id": user_id}
+            "get_user_guilds", self.bot.cluster_count, {"user_id": user.id}
         )
         guilds = []
         for chunk in data:
             guilds.extend(chunk)
-        guilds = [f"{guild['name']} `{guild['id']}`" for guild in guilds]
+        if count:
+            guilds = [f"{guild['name']} `{guild['id']}` ({guild['member_count']} members)" for guild in guilds]
+        else:
+            guilds = [f"{guild['name']} `{guild['id']}`" for guild in guilds]
         all_pages = []
         for chunk in [guilds[i : i + 20] for i in range(0, len(guilds), 20)]:
-            page = discord.Embed(title="Guilds", colour=self.bot.primary_colour)
+            page = discord.Embed(title="Servers", colour=self.bot.primary_colour)
             for guild in chunk:
                 if page.description == discord.Embed.Empty:
                     page.description = guild
@@ -89,12 +95,8 @@ class Admin(commands.Cog):
         usage="createinvite <server ID>",
         hidden=True,
     )
-    async def createinvite(self, ctx, *, guild_id: int):
-        guild = await self.bot.cogs["Communication"].handler("get_guild", 1, {"guild_id": guild_id})
-        if not guild:
-            await ctx.send(embed=discord.Embed(description="No such guild was found.", colour=self.bot.error_colour))
-            return
-        invite = await self.bot.cogs["Communication"].handler("invite_guild", 1, {"guild_id": guild_id})
+    async def createinvite(self, ctx, *, guild: converters.GlobalGuild):
+        invite = await self.bot.cogs["Communication"].handler("invite_guild", 1, {"guild_id": guild["id"]})
         if not invite:
             await ctx.send(
                 embed=discord.Embed(
@@ -109,6 +111,40 @@ class Admin(commands.Cog):
                     colour=self.bot.primary_colour,
                 )
             )
+
+    @checks.is_admin()
+    @commands.command(
+        description="Get the top servers using the bot.",
+        aliases=["topguilds"],
+        usage="topservers [count]",
+        hidden=True,
+    )
+    async def topservers(self, ctx, *, count: int = 20):
+        data = await self.bot.cogs["Communication"].handler("get_top_guilds", self.bot.cluster_count, {"count": count})
+        guilds = []
+        for chunk in data:
+            guilds.extend(chunk)
+        guilds = sorted(guilds, key=lambda x: x["member_count"], reverse=True)[:count]
+        top_guilds = []
+        for index, guild in enumerate(guilds):
+            top_guilds.append(f"#{index + 1} {guild['name']} `{guild['id']}` ({guild['member_count']} members)")
+        all_pages = []
+        for chunk in [top_guilds[i : i + 20] for i in range(0, len(top_guilds), 20)]:
+            page = discord.Embed(title="Top Servers", colour=self.bot.primary_colour)
+            for guild in chunk:
+                if page.description == discord.Embed.Empty:
+                    page.description = guild
+                else:
+                    page.description += f"\n{guild}"
+            page.set_footer(text="Use the reactions to flip pages.")
+            all_pages.append(page)
+        if len(all_pages) == 1:
+            embed = all_pages[0]
+            embed.set_footer(text=discord.Embed.Empty)
+            await ctx.send(embed=embed)
+            return
+        paginator = Paginator(length=1, entries=all_pages, use_defaults=True, embed=True, timeout=120)
+        await paginator.start(ctx)
 
     @checks.is_admin()
     @commands.command(description="Make me say something.", usage="echo [channel] <message>", hidden=True)
