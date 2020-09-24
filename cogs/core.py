@@ -22,6 +22,7 @@ class Core(commands.Cog):
     @checks.is_modmail_channel()
     @checks.in_database()
     # @checks.is_mod()
+    @commands.has_permissions(ban_members=True)
     @commands.guild_only()
     @commands.command(
         description="Reply to the ticket, useful when anonymous messaging is enabled.",
@@ -34,6 +35,7 @@ class Core(commands.Cog):
     @checks.is_modmail_channel()
     @checks.in_database()
     # @checks.is_mod()
+    @commands.has_permissions(ban_members=True)
     @commands.guild_only()
     @commands.command(description="Reply to the ticket anonymously.", usage="areply <message>")
     async def areply(self, ctx, *, message):
@@ -219,6 +221,7 @@ class Core(commands.Cog):
 
     @checks.in_database()
     # @checks.is_mod()
+    @commands.has_permissions(ban_members=True)
     @commands.guild_only()
     @commands.command(
         description="Blacklist a user from creating tickets.",
@@ -241,6 +244,7 @@ class Core(commands.Cog):
 
     @checks.in_database()
     # @checks.is_mod()
+    @commands.has_permissions(ban_members=True)
     @commands.guild_only()
     @commands.command(
         description="Whitelist a user from creating tickets.",
@@ -274,6 +278,7 @@ class Core(commands.Cog):
 
     @checks.in_database()
     # @checks.is_mod()
+    @commands.has_permissions(ban_members=True)
     @commands.guild_only()
     @commands.command(description="View the blacklist.", usage="viewblacklist")
     async def viewblacklist(self, ctx):
