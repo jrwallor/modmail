@@ -77,17 +77,17 @@ class Premium(commands.Cog):
             return
         to_send = ""
         for server in res[0]:
-            guild = await self.bot.cogs["Communication"].handler("get_guild", 1, {"guild_id": server})
+            guild = await self.bot.comm.handler("get_guild", 1, {"guild_id": server})
             if not guild:
                 to_send += f"\nUnknown server `{server}`"
             else:
-                to_send += f"\n{guild[0]['name']} `{server}`"
+                to_send += f"\n{guild['name']} `{server}`"
         await ctx.send(embed=discord.Embed(description=to_send, colour=self.bot.primary_colour))
 
     @checks.is_patron()
     @commands.command(description="Assign premium slot to a server.", usage="premiumassign <server ID>")
     async def premiumassign(self, ctx, *, guild: int):
-        if not await self.bot.cogs["Communication"].handler("get_guild", 1, {"guild_id": guild}):
+        if not await self.bot.comm.handler("get_guild", 1, {"guild_id": guild}):
             await ctx.send(
                 embed=discord.Embed(description="The server ID you provided is invalid.", colour=self.bot.error_colour)
             )

@@ -8,7 +8,6 @@ import discord
 
 from discord.ext import commands
 
-from cogs.modmail_channel import ModMailEvents
 from utils import checks
 from utils.paginator import Paginator
 
@@ -28,8 +27,7 @@ class Core(commands.Cog):
         usage="reply <message>",
     )
     async def reply(self, ctx, *, message):
-        modmail = ModMailEvents(self.bot)
-        await modmail.send_mail_mod(ctx.message, ctx.prefix, False, message)
+        await self.bot.cogs["ModMailEvents"].send_mail_mod(ctx.message, ctx.prefix, False, message)
 
     @checks.is_modmail_channel()
     @checks.in_database()
@@ -37,8 +35,7 @@ class Core(commands.Cog):
     @commands.guild_only()
     @commands.command(description="Reply to the ticket anonymously.", usage="areply <message>")
     async def areply(self, ctx, *, message):
-        modmail = ModMailEvents(self.bot)
-        await modmail.send_mail_mod(ctx.message, ctx.prefix, True, message)
+        await self.bot.cogs["ModMailEvents"].send_mail_mod(ctx.message, ctx.prefix, True, message)
 
     async def close_channel(self, ctx, reason, anon: bool = False):
         try:
@@ -54,7 +51,7 @@ class Core(commands.Cog):
                 timestamp=datetime.datetime.utcnow(),
             )
             embed.set_author(
-                name=f"{ctx.author.name}#{ctx.author.discriminator}" if anon is False else "Anonymous#0000",
+                name=str(ctx.author.name) if anon is False else "Anonymous#0000",
                 icon_url=ctx.author.avatar_url if anon is False else "https://cdn.discordapp.com/embed/avatars/0.png",
             )
             embed.set_footer(text=f"{ctx.guild.name} | {ctx.guild.id}", icon_url=ctx.guild.icon_url)
@@ -84,10 +81,7 @@ class Core(commands.Cog):
                         if member is None:
                             member = await self.bot.fetch_user(self.bot.tools.get_modmail_user(ctx.channel))
                         if member:
-                            embed.set_footer(
-                                text=f"{member.name}#{member.discriminator} | {member.id}",
-                                icon_url=member.avatar_url,
-                            )
+                            embed.set_footer(text=f"{member} | {member.id}", icon_url=member.avatar_url)
                         else:
                             embed.set_footer(
                                 text="Unknown#0000 | 000000000000000000",
@@ -173,15 +167,12 @@ class Core(commands.Cog):
     @commands.guild_only()
     @commands.command(description="Close all of the channel.", usage="closeall [reason]")
     async def closeall(self, ctx, *, reason: str = None):
-        category = (await self.bot.get_data(ctx.guild.id))[2]
-        category = ctx.guild.get_channel(category)
-        if category:
-            for channel in category.text_channels:
-                if checks.is_modmail_channel2(self.bot, channel):
-                    msg = copy.copy(ctx.message)
-                    msg.channel = channel
-                    new_ctx = await self.bot.get_context(msg, cls=type(ctx))
-                    await self.close_channel(new_ctx, reason)
+        for channel in ctx.guild.text_channels:
+            if checks.is_modmail_channel2(self.bot, channel):
+                msg = copy.copy(ctx.message)
+                msg.channel = channel
+                new_ctx = await self.bot.get_context(msg, cls=type(ctx))
+                await self.close_channel(new_ctx, reason)
         try:
             await ctx.send(
                 embed=discord.Embed(
@@ -198,15 +189,12 @@ class Core(commands.Cog):
     @commands.guild_only()
     @commands.command(description="Close all of the channel anonymously.", usage="acloseall [reason]")
     async def acloseall(self, ctx, *, reason: str = None):
-        category = (await self.bot.get_data(ctx.guild.id))[2]
-        category = ctx.guild.get_channel(category)
-        if category:
-            for channel in category.text_channels:
-                if checks.is_modmail_channel2(self.bot, channel):
-                    msg = copy.copy(ctx.message)
-                    msg.channel = channel
-                    new_ctx = await self.bot.get_context(msg, cls=type(ctx))
-                    await self.close_channel(new_ctx, reason, True)
+        for channel in ctx.guild.text_channels:
+            if checks.is_modmail_channel2(self.bot, channel):
+                msg = copy.copy(ctx.message)
+                msg.channel = channel
+                new_ctx = await self.bot.get_context(msg, cls=type(ctx))
+                await self.close_channel(new_ctx, reason, True)
         try:
             await ctx.send(
                 embed=discord.Embed(

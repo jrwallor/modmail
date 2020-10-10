@@ -33,10 +33,6 @@ class ModMail(commands.AutoShardedBot):
         return config
 
     @property
-    def ipc_channel(self):
-        return self.config.ipc_channel
-
-    @property
     def tools(self):
         return tools
 
@@ -56,12 +52,16 @@ class ModMail(commands.AutoShardedBot):
     def error_colour(self):
         return self.config.error_colour
 
+    @property
+    def comm(self):
+        return self.cogs["Communication"]
+
     async def get_data(self, guild):
         async with self.pool.acquire() as conn:
             res = await conn.fetchrow("SELECT * FROM data WHERE guild=$1", guild)
             if not res:
-                await conn.execute(
-                    "INSERT INTO data VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
+                res = await conn.fetchrow(
+                    "INSERT INTO data VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *",
                     guild,
                     None,
                     None,
@@ -74,11 +74,9 @@ class ModMail(commands.AutoShardedBot):
                     [],
                     False,
                 )
-                return await self.get_data(guild)
         return res
 
     all_prefix = {}
-    all_category = []
     banned_guilds = []
     banned_users = []
 
@@ -94,26 +92,14 @@ class ModMail(commands.AutoShardedBot):
         self.pool = await asyncpg.create_pool(**self.config.database, max_size=50, command_timeout=60)
 
     async def connect_prometheus(self):
-        self.prom = prometheus
+        self.prom = prometheus.Prometheus(self)
         if self.config.testing is False:
-            await self.prom.start(self)
+            await self.prom.start()
 
     async def start_bot(self):
         await self.connect_redis()
         await self.connect_postgres()
         await self.connect_prometheus()
-        async with self.pool.acquire() as conn:
-            data = await conn.fetch("SELECT guild, prefix, category FROM data")
-            bans = await conn.fetch("SELECT identifier, category FROM ban")
-        for row in data:
-            self.all_prefix[row[0]] = row[1]
-            if row[2]:
-                self.all_category.append(row[2])
-        for row in bans:
-            if row[1] == 0:
-                self.banned_users.append(row[0])
-            elif row[1] == 1:
-                self.banned_guilds.append(row[0])
         for extension in self.config.initial_extensions:
             try:
                 self.load_extension(extension)

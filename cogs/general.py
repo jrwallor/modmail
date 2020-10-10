@@ -1,5 +1,6 @@
 import logging
 import platform
+import time
 
 import discord
 import psutil
@@ -14,6 +15,7 @@ log = logging.getLogger(__name__)
 class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        psutil.cpu_percent()
 
     @commands.bot_has_permissions(add_reactions=True)
     @commands.command(
@@ -51,11 +53,7 @@ class General(commands.Cog):
         )
         page.set_thumbnail(url=self.bot.user.avatar_url)
         page.set_footer(text="Use the reactions to flip pages.")
-        page.add_field(
-            name="Invite",
-            value="https://modmail.xyz/invite",
-            inline=False,
-        )
+        page.add_field(name="Invite", value="https://modmail.xyz/invite", inline=False)
         page.add_field(name="Support Server", value="https://discord.gg/wjWJwJB", inline=False)
         all_pages.append(page)
         page = discord.Embed(title=f"{self.bot.user.name} Help Menu", colour=self.bot.primary_colour)
@@ -101,10 +99,13 @@ class General(commands.Cog):
 
     @commands.command(description="Pong! Get my latency.", usage="ping")
     async def ping(self, ctx):
-        await ctx.send(
+        start = time.time()
+        msg = await ctx.send(embed=discord.Embed(description="Checking latency...", colour=self.bot.primary_colour))
+        await msg.edit(
             embed=discord.Embed(
                 title="Pong!",
-                description=f"My current latency is {round(self.bot.latency * 1000, 2)}ms.",
+                description=f"Gateway latency: {round(self.bot.latency * 1000, 2)}ms.\n"
+                f"HTTP API latency: {round((time.time() - start) * 1000, 2)}ms.",
                 colour=self.bot.primary_colour,
             )
         )
@@ -130,9 +131,9 @@ class General(commands.Cog):
         aliases=["statistics", "info"],
     )
     async def stats(self, ctx):
-        guilds = sum(await self.bot.cogs["Communication"].handler("guild_count", self.bot.cluster_count))
-        channels = sum(await self.bot.cogs["Communication"].handler("channel_count", self.bot.cluster_count))
-        users = sum(await self.bot.cogs["Communication"].handler("user_count", self.bot.cluster_count))
+        guilds = sum(await self.bot.comm.handler("guild_count", self.bot.cluster_count))
+        channels = sum(await self.bot.comm.handler("channel_count", self.bot.cluster_count))
+        users = sum(await self.bot.comm.handler("user_count", self.bot.cluster_count))
 
         embed = discord.Embed(title=f"{self.bot.user.name} Statistics", colour=self.bot.primary_colour)
         embed.add_field(name="Owner", value="CHamburr#2591")
@@ -146,7 +147,7 @@ class General(commands.Cog):
         embed.add_field(name="Servers", value=str(guilds))
         embed.add_field(name="Channels", value=str(channels))
         embed.add_field(name="Users", value=str(users))
-        embed.add_field(name="CPU Usage", value=f"{psutil.cpu_percent()}%")
+        embed.add_field(name="CPU Usage", value=f"{psutil.cpu_percent(interval=None)}%")
         embed.add_field(name="RAM Usage", value=f"{psutil.virtual_memory().percent}%")
         embed.add_field(name="Python Version", value=platform.python_version())
         embed.add_field(name="discord.py Version", value=discord.__version__)
@@ -176,6 +177,18 @@ class General(commands.Cog):
         )
         all_pages.append(page)
         page = discord.Embed(
+            title="Car Crushers Official Discord",
+            description="Official Discord server for the Roblox game, Car Crushers 2. Where you can have both on and "
+            "off topic discussions about the game or anything in general with our community of active and friendly "
+            "members!",
+            colour=self.bot.primary_colour,
+        )
+        page.add_field(name="Link", value="https://discord.gg/CUkKzGr")
+        page.set_thumbnail(
+            url="https://cdn.discordapp.com/icons/242263977986359297/a_b45b86e21caa5edb1406a761a9efe3d5.gif"
+        )
+        all_pages.append(page)
+        page = discord.Embed(
             title="Eden of Gaming",
             description="Eden of Gaming is a global gaming community that aims to share knowledge and build "
             "relationships between members and fellow global gaming communities.",
@@ -195,7 +208,7 @@ class General(commands.Cog):
         )
         page.add_field(name="Link", value="https://discord.gg/gorillagang")
         page.set_thumbnail(
-            url="https://cdn.discordapp.com/icons/722716210604671026/3b65b43ae088894f424129d71b78ebf8.png"
+            url="https://cdn.discordapp.com/icons/722716210604671026/a_71cab18101a44243d0bfd94aec9cf05e.gif"
         )
         all_pages.append(page)
         page = discord.Embed(
