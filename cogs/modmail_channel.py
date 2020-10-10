@@ -17,9 +17,7 @@ class ModMailEvents(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.author.bot or not message.guild or not message.channel.category_id:
-            return
-        if not checks.is_modmail_channel2(self.bot, message.channel):
+        if message.author.bot or not message.guild or not checks.is_modmail_channel2(self.bot, message.channel):
             return
         if (
             message.channel.permissions_for(message.guild.me).send_messages is False
@@ -43,7 +41,7 @@ class ModMailEvents(commands.Cog):
 
 
     async def send_mail_mod(self, message, prefix, anon: bool = False, msg: str = None, snippet: bool = False):
-        self.bot.prom.tickets_message_counter.inc()
+        self.bot.prom.tickets_message.inc({})
         data = await self.bot.get_data(message.guild.id)
         if self.bot.tools.get_modmail_user(message.channel) in data[9]:
             await message.channel.send(
@@ -77,7 +75,7 @@ class ModMailEvents(commands.Cog):
                 timestamp=datetime.datetime.utcnow(),
             )
             embed.set_author(
-                name=f"{message.author.name}#{message.author.discriminator}" if anon is False else "Anonymous#0000",
+                name=str(message.author) if anon is False else "Anonymous#0000",
                 icon_url=message.author.avatar_url
                 if anon is False
                 else "https://cdn.discordapp.com/embed/avatars/0.png",
@@ -95,7 +93,7 @@ class ModMailEvents(commands.Cog):
                     name=f"Anonymous#0000 | {message.author.name}#{message.author.discriminator}",
                     icon_url="https://cdn.discordapp.com/embed/avatars/0.png",
                )
-            embed.set_footer(text=f"{member.name}#{member.discriminator} | {member.id}", icon_url=member.avatar_url)
+            embed.set_footer(text=f"{member} | {member.id}", icon_url=member.avatar_url)
             for count, attachment in enumerate([attachment.url for attachment in message2.attachments], start=1):
                 embed.add_field(name=f"Attachment {count}", value=attachment, inline=False)
             for file in files:
