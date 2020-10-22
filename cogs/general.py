@@ -312,7 +312,8 @@ class General(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 title="Support Server",
-                description="https://discord.gg/wjWJwJB",
+                description=f"https://discordapp.com/api/oauth2/authorize?client_id={self.bot.user.id}"
+                "&permissions=268823640&scope=bot",
                 colour=self.bot.primary_colour,
             )
         )
