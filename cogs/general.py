@@ -302,7 +302,8 @@ class General(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 title="Invite Link",
-                description="https://modmail.xyz/invite",
+                description=f"https://discordapp.com/api/oauth2/authorize?client_id=692547870183915618"
+                "&permissions=268823640&scope=bot",
                 colour=self.bot.primary_colour,
             )
         )
@@ -312,8 +313,7 @@ class General(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 title="Support Server",
-                description=f"https://discordapp.com/api/oauth2/authorize?client_id={self.bot.user.id}"
-                "&permissions=268823640&scope=bot",
+                description="https://discord.gg/wjWJwJB",
                 colour=self.bot.primary_colour,
             )
         )
